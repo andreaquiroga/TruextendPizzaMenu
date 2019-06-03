@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PizzaPlaceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Ingredient">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="PizzaIngredients" Relationship="Self.FK_PizzaIngredient_Ingredient" FromRole="Ingredient" ToRole="PizzaIngredient" />
+  </EntityType>
+  <EntityType Name="Pizza">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="PizzaIngredients" Relationship="Self.FK_PizzaIngredient_Pizza1" FromRole="Pizza" ToRole="PizzaIngredient" />
+  </EntityType>
+  <EntityType Name="PizzaIngredient">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PizzaId" Type="Int32" Nullable="false" />
+    <Property Name="IngredientId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Ingredient" Relationship="Self.FK_PizzaIngredient_Ingredient" FromRole="PizzaIngredient" ToRole="Ingredient" />
+    <NavigationProperty Name="Pizza" Relationship="Self.FK_PizzaIngredient_Pizza1" FromRole="PizzaIngredient" ToRole="Pizza" />
+  </EntityType>
+  <Association Name="FK_PizzaIngredient_Ingredient">
+    <End Role="Ingredient" Type="Self.Ingredient" Multiplicity="1" />
+    <End Role="PizzaIngredient" Type="Self.PizzaIngredient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Ingredient">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PizzaIngredient">
+        <PropertyRef Name="IngredientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PizzaIngredient_Pizza1">
+    <End Role="Pizza" Type="Self.Pizza" Multiplicity="1" />
+    <End Role="PizzaIngredient" Type="Self.PizzaIngredient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pizza">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PizzaIngredient">
+        <PropertyRef Name="PizzaId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="PizzaPlaceEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Ingredients" EntityType="Self.Ingredient" />
+    <EntitySet Name="Pizzas" EntityType="Self.Pizza" />
+    <EntitySet Name="PizzaIngredients" EntityType="Self.PizzaIngredient" />
+    <AssociationSet Name="FK_PizzaIngredient_Ingredient" Association="Self.FK_PizzaIngredient_Ingredient">
+      <End Role="Ingredient" EntitySet="Ingredients" />
+      <End Role="PizzaIngredient" EntitySet="PizzaIngredients" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PizzaIngredient_Pizza1" Association="Self.FK_PizzaIngredient_Pizza1">
+      <End Role="Pizza" EntitySet="Pizzas" />
+      <End Role="PizzaIngredient" EntitySet="PizzaIngredients" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
